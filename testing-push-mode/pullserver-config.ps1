@@ -1,13 +1,13 @@
-    Configuration PullServer {
+Configuration PullServer {
 
-    Import-DscResource -ModuleName xPSDesiredStateConfiguration -ModuleVersion 5.1.0.0
+Import-DscResource -ModuleName xPSDesiredStateConfiguration -ModuleVersion 5.1.0.0
 
     Node Pull {
         
         WindowsFeature DSCService {
             Name = "DSC-Service"
             Ensure = 'Present'
-            }
+        }
 
         xDSCWebService Pullserver {
             Ensure = 'Present'
@@ -20,7 +20,16 @@
             DependsOn = "[WindowsFeature]DSCService"
             UseSecurityBestPractices = $false
             CertificateThumbprint = "AllowUnencryptedTraffic"
-            }
         }
+
+        File RegistrationKey {
+            Ensure = 'Present'
+            DestinationPath = "$env:PROGRAMFILES\WindowsPowershell\DscService\registrationKeys.txt"
+            Contents = '0f9ae841-785d-4a2d-8cdf-ecae01f44cdb'
+            Type = 'File'
+            }
+        
     }
-    PullServer
+}
+            
+PullServer
